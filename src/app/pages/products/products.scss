@@ -1,0 +1,69 @@
+.page-header {
+  margin-bottom: 32px;
+  background: var(--mat-sys-surface-container-low);
+  padding: 16px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--mat-sys-on-surface);
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 14px;
+    margin-top: 2px;
+    display: block;
+  }
+}
+
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.product-form-card {
+  width: 100%;
+  border-radius: 20px !important;
+  border: 1px solid var(--mat-sys-outline-variant) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+  background-color: var(--mat-sys-surface-container-lowest) !important;
+  overflow: hidden;
+
+  mat-card-header {
+    margin-bottom: 24px;
+
+    mat-icon[mat-card-avatar] {
+      font-size: 24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  mat-card-content {
+    padding: 0 16px 24px 16px !important;
+  }
+
+  mat-card-actions {
+    padding: 20px !important;
+    gap: 12px;
+    background: var(--mat-sys-surface-container-edge);
+  }
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

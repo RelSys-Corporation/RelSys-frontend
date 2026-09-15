@@ -1,0 +1,93 @@
+<div class="page-header">
+  <h1>Fornecedores</h1>
+  <span class="subtitle">Cadastrar e gerenciar fornecedores</span>
+</div>
+
+<div class="content-grid">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>business</mat-icon>
+      <mat-card-title>{{ isEditing ? 'Editar Fornecedor' : 'Novo Fornecedor' }}</mat-card-title>
+      <mat-card-subtitle>{{ isEditing ? 'Altere os dados do fornecedor' : 'Preencha os dados para cadastrar' }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field appearance="outline">
+        <mat-label>Nome do fornecedor</mat-label>
+        <input
+          matInput
+          [(ngModel)]="formName"
+          placeholder="Ex: Eletrônica Ltda"
+          [disabled]="loading()"
+          autofocus
+        />
+        <mat-icon matSuffix>badge</mat-icon>
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-divider />
+
+    <mat-card-actions align="end">
+      <button
+        mat-stroked-button
+        color="warn"
+        (click)="cancelEdit()"
+        [disabled]="loading()"
+      >
+        <mat-icon>close</mat-icon>
+        Cancelar
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="loading()"
+        (click)="saveSupplier()"
+      >
+        <mat-icon>save</mat-icon>
+        {{ loading() ? 'Salvando...' : (isEditing ? 'Atualizar' : 'Cadastrar') }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="list-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>list</mat-icon>
+      <mat-card-title>Fornecedores Cadastrados</mat-card-title>
+      <mat-card-subtitle>{{ suppliers().length }} fornecedor(es) no sistema</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-divider />
+
+    <cdk-virtual-scroll-viewport
+      itemSize="56"
+      class="viewport"
+    >
+      <div class="supplier-row-header">
+        <span class="col-id">ID</span>
+        <span class="col-name">Nome</span>
+        <span class="col-exempt">Isento</span>
+      </div>
+
+      @if (suppliers().length > 0) {
+        <div class="supplier-row"
+          *cdkVirtualFor="let supplier of suppliers(); trackBy: trackById"
+          (click)="selectSupplier(supplier)"
+        >
+          <span class="col-id">{{ supplier.id }}</span>
+          <span class="col-name">{{ supplier.name }}</span>
+          <span class="col-exempt" (click)="$event.stopPropagation()">
+            <mat-slide-toggle
+              [checked]="isExempt(supplier.id)"
+              (toggleChange)="toggleExempt(supplier.id)"
+            />
+          </span>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">business</mat-icon>
+          <p>Nenhum fornecedor cadastrado ainda</p>
+        </div>
+      }
+    </cdk-virtual-scroll-viewport>
+  </mat-card>
+</div>

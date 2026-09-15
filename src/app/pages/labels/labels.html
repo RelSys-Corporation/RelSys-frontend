@@ -1,0 +1,95 @@
+<div class="page-header">
+  <h1>Etiquetas - Em desenvolvimento</h1>
+  <span class="subtitle">Impressão de etiquetas para produtos</span>
+</div>
+
+<div class="labels-layout">
+  <!-- Add product to label queue -->
+  <mat-card class="add-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>label</mat-icon>
+      <mat-card-title>Adicionar à Impressão</mat-card-title>
+      <mat-card-subtitle>Selecione o produto e a quantidade de etiquetas</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Produto</mat-label>
+        <mat-select [(ngModel)]="selectedProductId" [disabled]="loading()">
+          @for (product of products(); track product.id) {
+            <mat-option [value]="product.id">
+              {{ product.name }} ({{ product.barcode }})
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Quantidade de etiquetas</mat-label>
+        <input matInput type="number" [(ngModel)]="labelQuantity" min="1" step="1" [disabled]="loading()" />
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        color="primary"
+        class="full-width"
+        (click)="addItem()"
+        [disabled]="!selectedProductId() || loading()"
+      >
+        <mat-icon>add</mat-icon>
+        Adicionar
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Label queue -->
+  <mat-card class="queue-card">
+    <mat-card-header>
+      <mat-card-title>Fila de Impressão</mat-card-title>
+      <mat-card-subtitle>
+        {{ labelItems().length }} {{ labelItems().length === 1 ? 'produto' : 'produtos' }} — {{ totalLabels() }} etiquetas
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (labelItems().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">label</mat-icon>
+          <p>Nenhum produto na fila</p>
+          <p class="hint">Adicione produtos para gerar etiquetas</p>
+        </div>
+      } @else {
+        <mat-list>
+          @for (item of labelItems(); track item.productId) {
+            <mat-list-item>
+              <mat-icon matListItemIcon>inventory_2</mat-icon>
+              <span matListItemTitle>{{ item.productName }}</span>
+              <span matListItemLine>{{ item.quantity }} {{ item.quantity === 1 ? 'etiqueta' : 'etiquetas' }}</span>
+              <button mat-icon-button matListItemMeta (click)="removeItem(item.productId)" aria-label="Remover">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-list-item>
+            @if (!$last) {
+              <mat-divider />
+            }
+          }
+        </mat-list>
+      }
+    </mat-card-content>
+
+    @if (labelItems().length > 0) {
+      <mat-divider />
+      <mat-card-actions align="end">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="printLabels()"
+          [disabled]="loading()"
+        >
+          <mat-icon>print</mat-icon>
+          {{ loading() ? 'Imprimindo...' : 'Imprimir Etiquetas' }}
+        </button>
+      </mat-card-actions>
+    }
+  </mat-card>
+</div>

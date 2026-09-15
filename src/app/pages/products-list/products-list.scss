@@ -1,0 +1,124 @@
+.page-header {
+  margin-bottom: 32px;
+  background: var(--mat-sys-surface-container-low);
+  padding: 16px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--mat-sys-on-surface);
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 14px;
+    margin-top: 2px;
+    display: block;
+  }
+}
+
+.page-toolbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  width: 100%;
+
+  .search-field {
+    flex: 1;
+    max-width: 400px;
+  }
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 20px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  background-color: var(--mat-sys-surface-container-lowest);
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  tr.mat-mdc-header-row {
+    background-color: var(--mat-sys-surface-container-low);
+    height: 56px;
+  }
+
+  th.mat-mdc-header-cell {
+    color: var(--mat-sys-on-surface);
+    font-weight: 700;
+    font-size: 14px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  tr.mat-mdc-row {
+    height: 60px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--mat-sys-surface-container-hover);
+    }
+  }
+
+  td.mat-mdc-cell {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 14px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  tr:last-child td.mat-mdc-cell {
+    border-bottom: none;
+  }
+}
+
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 0;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+
+  .empty-icon {
+    font-size: 56px;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 16px;
+    color: var(--mat-sys-primary);
+    opacity: 0.3;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+  }
+
+  .hint {
+    font-size: 14px;
+    color: var(--mat-sys-on-surface-variant);
+    margin-top: 4px;
+  }
+
+  .spin {
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+    color: var(--mat-sys-primary);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

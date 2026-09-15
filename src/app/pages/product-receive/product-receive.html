@@ -1,0 +1,112 @@
+<div class="page-header">
+  <h1>Recebimento de Produtos</h1>
+  <span class="subtitle">Registrar entrada de mercadorias no estoque</span>
+</div>
+
+<div class="receive-layout">
+  <!-- Receive form -->
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>move_to_inbox</mat-icon>
+      <mat-card-title>Registrar Recebimento</mat-card-title>
+      <mat-card-subtitle>Preencha os dados da mercadoria recebida</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Produto</mat-label>
+        <mat-select
+          [ngModel]="selectedProductId()"
+          (ngModelChange)="onProductChange($event)"
+          [disabled]="loading()"
+        >
+          @for (product of products(); track product.id) {
+            <mat-option [value]="product.id">
+              {{ product.name }} ({{ product.barcode }})
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Fornecedor</mat-label>
+        <mat-select
+          [ngModel]="selectedSupplierId()"
+          (ngModelChange)="selectedSupplierId.set($event)"
+          [disabled]="loading() || selectedProduct() === null"
+        >
+          @if (selectedProduct(); as product) {
+            @for (supplier of product.suppliers; track supplier.id) {
+              <mat-option [value]="supplier.id">{{ supplier.name }}</mat-option>
+            }
+          }
+        </mat-select>
+        <mat-icon matSuffix>business</mat-icon>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Preço de compra (unitário)</mat-label>
+          <input matInput type="number" [(ngModel)]="purchasePrice" placeholder="Ex: 5.50" min="0" step="0.01" [disabled]="loading()" />
+          <span matTextPrefix>R$&nbsp;</span>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Quantidade</mat-label>
+          <input matInput type="number" [(ngModel)]="quantity" placeholder="Ex: 100" min="1" step="1" [disabled]="loading()" />
+          <span matTextSuffix>un</span>
+        </mat-form-field>
+      </div>
+
+      @if (selectedProduct() && purchasePrice() !== null && quantity() !== null) {
+        <div class="summary">
+          <span>Total da compra:</span>
+          <strong>{{ purchasePrice()! * quantity()! | currency:'BRL' }}</strong>
+        </div>
+      }
+    </mat-card-content>
+
+    <mat-divider />
+
+    <mat-card-actions align="end">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="receiveProduct()"
+        [disabled]="loading()"
+      >
+        <mat-icon>move_to_inbox</mat-icon>
+        {{ loading() ? 'Registrando...' : 'Registrar Recebimento' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Recent receives -->
+  <mat-card class="history-card">
+    <mat-card-header>
+      <mat-card-title>Recebimentos Recentes</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (recentReceives().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">history</mat-icon>
+          <p>Nenhum recebimento registrado nesta sessão</p>
+        </div>
+      } @else {
+        <mat-list>
+          @for (receive of recentReceives(); track $index) {
+            <mat-list-item>
+              <mat-icon matListItemIcon>check_circle</mat-icon>
+              <span matListItemTitle>{{ receive.product }}</span>
+              <span matListItemLine>{{ receive.qty }} unidades — {{ receive.date }}</span>
+            </mat-list-item>
+            @if (!$last) {
+              <mat-divider />
+            }
+          }
+        </mat-list>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

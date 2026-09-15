@@ -1,0 +1,183 @@
+<div class="page-header">
+  <h1>Vendas</h1>
+  <span class="subtitle">Registrar nova venda</span>
+</div>
+
+<div class="sales-layout">
+  <!-- Left panel: product search -->
+  <mat-card class="search-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>shopping_cart</mat-icon>
+      <mat-card-title>Adicionar Produto</mat-card-title>
+      <mat-card-subtitle>Adicione um produto à venda</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nome, ID ou código de barras</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchInput"
+          (keyup.enter)="search()"
+          placeholder="Digite para buscar..."
+          autofocus
+          [matAutocomplete]="auto"
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectProduct($event.option.value)">
+        @for (product of filteredProducts(); track product.id) {
+          <mat-option [value]="product">
+            <span class="product-option-name">{{ product.name }}</span>
+            <span class="product-option-detail">{{ product.barcode }} — {{ product.price | currency:'BRL' }}</span>
+          </mat-option>
+        }
+      </mat-autocomplete>
+      @if (loading()) {
+        <div class="searching-indicator">
+          <mat-icon class="spin">sync</mat-icon>
+          <span>Buscando produto...</span>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Right panel: cart -->
+  <mat-card class="cart-card">
+    <mat-card-header>
+      <mat-card-title>Carrinho</mat-card-title>
+      <mat-card-subtitle>
+        {{ cart().length }} {{ cart().length === 1 ? 'item' : 'itens' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (cart().length === 0) {
+        <div class="empty-cart">
+          <mat-icon class="empty-icon">shopping_cart</mat-icon>
+          <p>Carrinho vazio</p>
+          <p class="hint">Adicione produtos por código de barras ou nome</p>
+        </div>
+      } @else {
+        <div class="cart-table-container">
+          <table mat-table [dataSource]="cart()" class="cart-table">
+            <ng-container matColumnDef="product">
+              <th mat-header-cell *matHeaderCellDef>Produto</th>
+              <td mat-cell *matCellDef="let item">{{ item.productName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef>Preço</th>
+              <td mat-cell *matCellDef="let item">{{ item.price | currency:'BRL' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Qtd</th>
+              <td mat-cell *matCellDef="let item">
+                <div class="qty-control">
+                  <button mat-icon-button size="small" (click)="updateQuantity(item.productId, item.quantity - 1)" aria-label="Diminuir quantidade">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="qty-value">{{ item.quantity }}</span>
+                  <button mat-icon-button size="small" (click)="updateQuantity(item.productId, item.quantity + 1)" aria-label="Aumentar quantidade">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subtotal">
+              <th mat-header-cell *matHeaderCellDef>Subtotal</th>
+              <td mat-cell *matCellDef="let item">{{ item.price * item.quantity | currency:'BRL' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="exempt">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let item">
+                @if (isItemExempt(item.supplierId)) {
+                  <mat-icon class="exempt-icon" title="Isento de desconto">shield</mat-icon>
+                }
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let item">
+                <button mat-icon-button color="warn" (click)="removeItem(item.productId)" aria-label="Remover item">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="cartColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: cartColumns;"></tr>
+          </table>
+        </div>
+      }
+    </mat-card-content>
+
+    @if (cart().length > 0) {
+      <mat-divider />
+      <mat-card-actions class="cart-actions">
+        <div class="payment-section">
+          <mat-form-field appearance="outline" class="payment-input">
+            <mat-label>Forma de Pagamento</mat-label>
+            <mat-select [(ngModel)]="paymentMethod" [disabled]="loading()">
+              @for (method of paymentMethods; track method.id) {
+                <mat-option [value]="method.id">{{ method.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="discount-section">
+          <mat-form-field appearance="outline" class="discount-input">
+            <mat-label>Desconto (%)</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              max="100"
+              [(ngModel)]="discount"
+              placeholder="0"
+            />
+            <span matSuffix>%</span>
+          </mat-form-field>
+          @if (discount() > 0) {
+            <div class="total-row discount-row">
+              <span class="total-label">Subtotal: </span>
+              <span class="total-value">{{ total() | currency:'BRL' }}</span>
+            </div>
+            @if (discountBreakdown()?.exemptTotal; as exemptTotal) {
+              <div class="total-row exempt-row">
+                <span class="total-label">Isentos de desconto: </span>
+                <span class="total-value">{{ exemptTotal | currency:'BRL' }}</span>
+              </div>
+              <div class="total-row discountable-row">
+                <span class="total-label">Com desconto ({{ discount() }}%): </span>
+                <span class="total-value">{{ discountBreakdown()?.discountableTotal | currency:'BRL' }}</span>
+              </div>
+            }
+          }
+        </div>
+        <div class="total-section">
+          <span class="total-label">Total:</span>
+          <span class="total-value">{{ totalWithDiscount() | currency:'BRL' }}</span>
+        </div>
+        <div class="action-buttons">
+          <button mat-stroked-button color="warn" (click)="clearCart()">
+            <mat-icon>clear</mat-icon>
+            Limpar
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="finishSale()"
+            [disabled]="loading()"
+          >
+            <mat-icon>check_circle</mat-icon>
+            Finalizar Venda
+          </button>
+        </div>
+      </mat-card-actions>
+    }
+  </mat-card>
+</div>
