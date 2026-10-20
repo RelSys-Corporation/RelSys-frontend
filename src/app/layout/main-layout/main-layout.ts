@@ -25,10 +25,10 @@ type NavItem = {
     MatIconModule,
     MatButtonModule,
   ],
-  templateUrl: './layout.html',
-  styleUrl: './layout.scss',
+  templateUrl: './main-layout.html',
+  styleUrl: './main-layout.scss',
 })
-export class Layout {
+export class MainLayout {
   private readonly router = inject(Router);
 
   protected readonly opened = signal(true);

@@ -1,0 +1,25 @@
+<div class="conteiner">
+  <mat-card class="main-card">
+    <mat-card-header class="card-header">
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+
+    <form [formGroup]="authForm" class="form">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Nome de usuário</mat-label>
+        <input matInput formControlName="username" placeholder="Nome do seu usuário">
+        <mat-error>O nome de usuário deve ter no minimo 5 caracteres</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input matInput formControlName="password", placeholder="Senha do seu usuário">
+        <mat-error>Senha inválida</mat-error>
+      </mat-form-field>
+
+      <mat-card-actions>
+        <button matButton="filled" class="form-field">Fazer Login</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>
