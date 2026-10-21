@@ -58,6 +58,9 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "allowedHosts": ["relsys.com"]
+          },
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
