@@ -4,7 +4,7 @@
       <mat-card-title>Login</mat-card-title>
     </mat-card-header>
 
-    <form [formGroup]="authForm" class="form">
+    <form [formGroup]="authForm" class="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Nome de usuário</mat-label>
         <input matInput formControlName="username" placeholder="Nome do seu usuário">
@@ -18,7 +18,7 @@
       </mat-form-field>
 
       <mat-card-actions>
-        <button matButton="filled" class="form-field">Fazer Login</button>
+        <button matButton="filled" type="submit" class="form-field" [disabled]="authForm.invalid">Fazer Login</button>
       </mat-card-actions>
     </form>
   </mat-card>
