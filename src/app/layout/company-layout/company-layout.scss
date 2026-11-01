@@ -1,0 +1,34 @@
+.conteiner {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-card {
+  padding: 2rem;
+  margin: 10px;
+  width: clamp(350px, 30%, 35%);
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12rem;
+
+    padding-bottom: 32px;
+  }
+}
+
+
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+
+  .form-field {
+    width: 100%;
+  }
+}

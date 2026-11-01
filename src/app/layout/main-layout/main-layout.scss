@@ -31,11 +31,14 @@
 }
 
 .content {
+  display: flex;
+  flex-direction: column;
   padding: 0;
 }
 
 .content-wrapper {
-  padding: 24px;
+  flex: 1;
+  padding: 18px;
   max-width: 100%;
 }
 

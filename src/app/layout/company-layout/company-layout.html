@@ -1,0 +1,23 @@
+<div class="conteiner">
+  <mat-card class="main-card">
+    <mat-card-header class="card-header">
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+
+    <form [formGroup]="authForm" class="form" (ngSubmit)="submit()">
+      <mat-form-field class="form-field">
+        <mat-label>Selecione uma empresa</mat-label>
+        <mat-select>
+          <mat-option>Selecione uma empresa</mat-option>
+          @for (company of userCompanies$ | async; track company.companyId) {
+            <mat-option [value]="company.companyId"> {{ company.companyName }} </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-card-actions>
+        <button matButton="filled" type="submit" class="form-field">Fazer Login</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

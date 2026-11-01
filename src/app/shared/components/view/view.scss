@@ -1,0 +1,53 @@
+@use '@angular/material' as mat;
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.main-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  /*filter: drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.5));*/
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+}
+
+.divider {
+  margin: 0 auto;
+}
+
+.divider-h {
+  margin: auto;
+}
+
+.mat-mdc-table {
+  background-color: var(--mat-sys-surface-container);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 7px;
+  min-width: 100%;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+mat-paginator {
+  background-color: var(--mat-card-elevated-container-color);
+}
+
+.mat-column-id {
+  max-width: fit-content;
+}
