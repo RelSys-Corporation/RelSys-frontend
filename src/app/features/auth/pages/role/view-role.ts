@@ -1,16 +1,22 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { View } from '../../../../../shared/components/view/view';
+import { View } from '../../../../shared/components/view/view';
 import { MatTableDataSource } from '@angular/material/table';
-import { ViewRoleModel } from '../../../models/view-role.model';
-import { AuthHttp } from '../../../services/auth-http';
+import { ViewRoleModel } from '../../models/view-role.model';
+import { AuthHttp } from '../../services/auth-http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   imports: [View],
   standalone: true,
   selector: 'app-manage-roles',
-  styleUrl: './view-role.scss',
-  templateUrl: './view-role.html',
+  template: `
+    <view
+      displayName="cargos"
+      [displayedColumns]="columns"
+      [dataSource]="dataSource"
+      baseUrl="/auth/role">
+    </view>
+  `,
 })
 export class ViewRole implements OnInit {
   private authHttp = inject(AuthHttp);

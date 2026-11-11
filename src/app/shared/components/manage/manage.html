@@ -1,0 +1,37 @@
+<div class="container">
+  <mat-card class="main-card">
+    <mat-card-header class="card-header">
+      <mat-card-title>
+        {{ ((isEditing()) ? 'Editando ' : 'Criando ') + displayName() | titlecase }}
+      </mat-card-title>
+    </mat-card-header>
+
+    <form [formGroup]="formGroup()" class="form" (ngSubmit)="onSubmit()">
+      <div class="form-layout">
+        @for (field of fields(); track field) {
+          <mat-form-field appearance="outline">
+            <mat-label> {{ field.displayName | titlecase }} </mat-label>
+            <input matInput [formControlName]="field.formControlName" [type]="field.type" [placeholder]="field.placeholder">
+            <mat-error>{{ getErrorMessage(field.formControlName) }}</mat-error>
+          </mat-form-field>
+        }
+      </div>
+
+      <span class="divider-h"></span>
+
+      <mat-card-actions>
+        <span class="divider"></span>
+
+        <div class="action-buttons">
+          @if (isEditing()) {
+            <button matButton="tonal" type="button" (click)="onReset()">Redefinir</button>
+            <button matButton="filled" type="submit" [disabled]="formGroup().invalid">Atualizar</button>
+          } @else {
+            <button matButton="filled" type="submit" [disabled]="formGroup().invalid">Criar</button>
+          }
+        </div>
+      </mat-card-actions>
+    </form>
+
+  </mat-card>
+</div>
