@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MATERIAL_MODULES } from '../../material/material.imports';
 import { Router } from '@angular/router';
 import { TitleCasePipe } from '@angular/common';
+import { SystemEntities } from '../../constant/systemEntities.enum';
 
 @Component({
   imports: [MATERIAL_MODULES, TitleCasePipe],
@@ -15,10 +16,11 @@ import { TitleCasePipe } from '@angular/common';
 export class View implements AfterViewInit {
   private router = inject(Router);
 
-  displayName = input.required<string>();
-  displayedColumns = input.required<{ name: string; dataName: string }[]>();
-  dataSource = input.required<MatTableDataSource<any>>();
-  baseUrl = input.required<string>();
+  readonly entity = input.required<SystemEntities>();
+  readonly displayName = input.required<string>();
+  readonly displayedColumns = input.required<{ name: string; dataName: string }[]>();
+  readonly dataSource = input.required<MatTableDataSource<any>>();
+  readonly baseUrl = input.required<string>();
 
   columnNames = computed(() => this.displayedColumns().map((col) => col.dataName));
 

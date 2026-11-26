@@ -13,6 +13,15 @@ type NavItem = {
   children?: { label: string; icon: string; route: string }[];
 };
 
+/*
+ * entity: product
+ * actions: ['GET', 'POST'] -> /product/view
+ *
+ * entity: product
+ * actions: ['POST'] -> /product/new
+ *
+ */
+
 @Component({
   selector: 'app-layout',
   imports: [
@@ -31,6 +40,8 @@ type NavItem = {
 export class MainLayout {
   private readonly router = inject(Router);
 
+
+
   protected readonly opened = signal(true);
 
   private readonly produtosChildRoutes = ['/products', '/products-list', '/product-receive'];
@@ -41,15 +52,11 @@ export class MainLayout {
 
   protected readonly navItems: NavItem[] = [
     { label: 'Vendas', icon: 'shopping_cart', route: '/sales' },
-    {
-      label: 'Produtos',
-      icon: 'inventory_2',
-      children: [
-        { label: 'Cadastro', icon: 'add_circle', route: '/products' },
-        { label: 'Listagem', icon: 'view_list', route: '/products-list' },
-        { label: 'Recebimento', icon: 'move_to_inbox', route: '/product-receive' },
-      ],
-    },
+
+    { label: 'Cadastro', icon: 'add_circle', route: '/products' },
+    { label: 'Listagem', icon: 'view_list', route: '/products-list' },
+    { label: 'Recebimento', icon: 'move_to_inbox', route: '/product-receive' },
+
     { label: 'Fornecedores', icon: 'business', route: '/suppliers' },
     { label: 'Etiquetas', icon: 'label', route: '/labels' },
   ];
@@ -57,4 +64,6 @@ export class MainLayout {
   protected toggleProdutos() {
     this.produtosExpanded.update(v => !v);
   }
+
+
 }

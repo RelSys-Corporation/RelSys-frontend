@@ -2,13 +2,13 @@
   <mat-card class="main-card">
     <mat-card-header class="card-header">
       <mat-card-title>
-        {{ ((isEditing()) ? 'Editando ' : 'Criando ') + displayName() | titlecase }}
+        {{ ((isEditing()) ? 'Editando ' : 'Criando ') + titleName() | titlecase }}
       </mat-card-title>
     </mat-card-header>
 
     <form [formGroup]="formGroup()" class="form" (ngSubmit)="onSubmit()">
       <div class="form-layout">
-        @for (field of fields(); track field) {
+        @for (field of fields(); track field.formControlName) {
           <mat-form-field appearance="outline">
             <mat-label> {{ field.displayName | titlecase }} </mat-label>
             <input matInput [formControlName]="field.formControlName" [type]="field.type" [placeholder]="field.placeholder">

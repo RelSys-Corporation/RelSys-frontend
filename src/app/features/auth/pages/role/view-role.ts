@@ -3,7 +3,7 @@ import { View } from '../../../../shared/components/view/view';
 import { MatTableDataSource } from '@angular/material/table';
 import { ViewRoleModel } from '../../models/view-role.model';
 import { AuthHttp } from '../../services/auth-http';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SystemEntities } from '../../../../shared/constant/systemEntities.enum';
 
 @Component({
   imports: [View],
@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   selector: 'app-manage-roles',
   template: `
     <view
+      [entity]="entity"
       displayName="cargos"
       [displayedColumns]="columns"
       [dataSource]="dataSource"
@@ -19,8 +20,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   `,
 })
 export class ViewRole implements OnInit {
-  private authHttp = inject(AuthHttp);
-  private snackBar = inject(MatSnackBar);
+  private readonly entity = SystemEntities.ROLE;
+  private readonly authHttp = inject(AuthHttp);
 
   protected columns: { name: string; dataName: string }[] = [
     { name:'ID', dataName:'id' },
@@ -29,15 +30,6 @@ export class ViewRole implements OnInit {
   protected dataSource = new MatTableDataSource<ViewRoleModel>();
 
   ngOnInit(): void {
-    this.authHttp.getAllRoles().subscribe({
-      next: (data) => {
-        this.dataSource.data = data;
-      },
-      error: (err) => this.snackBar.open(
-        err.error?.errorMessage, 'Fechar', {
-          duration: 3000
-        }
-      )
-    })
+    this.authHttp.getAllRoles().subscribe((data) => this.dataSource.data = data)
   }
 }

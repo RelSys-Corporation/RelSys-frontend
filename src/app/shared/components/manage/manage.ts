@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ManageFieldInterface } from '../../interfaces/manageField.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../core/envirnoment';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SystemEntities, entitiesMap } from './../../constant/systemEntities.enum';
 
 @Component({
   imports: [
@@ -23,16 +23,19 @@ export class Manage {
   private readonly http = inject(HttpClient);
   private readonly route = inject(ActivatedRoute);
   private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
 
   // URL parameter
   readonly id = signal<string | null>(null);
 
   // input parameters
-  readonly displayName = input.required<string>();
-  readonly baseUrl = input.required<string>();
+  readonly entity = input.required<SystemEntities>();
+  readonly displayName = input<string>();
+  readonly baseUrl = input<string>();
   readonly fields = input.required<ManageFieldInterface[]>();
   readonly redirect = input.required<{ 'redirectUser': boolean, 'redirectTo': string }>();
+
+  protected readonly titleName = computed(() => this.displayName() ?? entitiesMap.find(item => item.key === this.entity())?.label)
+  private readonly url = computed(() => environment.apiUrl + (this.baseUrl() ?? entitiesMap.find(item => item.key === this.entity())?.url));
 
   readonly isEditing = computed(() => !!this.id() && this.id() !== 'new');
   formGroup = input.required<FormGroup>();
@@ -48,17 +51,10 @@ export class Manage {
       const currentId = this.id();
 
       if (currentId && this.isEditing()) {
-        this.http.get(`${environment.apiUrl + this.baseUrl()}/${currentId}`)
-          .subscribe({
-            next: (data) => {
-              this.formGroup().patchValue(data)
-              this.initialFormValue = this.formGroup().getRawValue();
-            },
-            error: (err) => this.snackBar.open(
-              err.error?.errorMessage, 'Fechar', {
-                duration: 3000
-              }
-            )
+        this.http.get(`${this.url()}/${currentId}`)
+          .subscribe((data) => {
+            this.formGroup().patchValue(data)
+            this.initialFormValue = this.formGroup().getRawValue();
           })
       }
     })
@@ -74,24 +70,17 @@ export class Manage {
     const payload = this.formGroup().value;
 
     const request$ = id && id !== 'new'
-      ? this.http.put(`${environment.apiUrl + this.baseUrl()}/${id}`, payload)
-      : this.http.post(`${environment.apiUrl + this.baseUrl()}`, payload);
+      ? this.http.put(`${this.url()}/${id}`, payload)
+      : this.http.post(`${this.url()}`, payload);
 
-    request$.subscribe({
-      next: (res) => {
-        if (!this.redirect().redirectUser)
-          return;
+    request$.subscribe(() => {
+      if (!this.redirect().redirectUser)
+        return;
 
-        this.router.navigate([
-          this.redirect().redirectTo
-        ]);
-      },
-      error: (err) => this.snackBar.open(
-          err.error?.errorMessage, 'Fechar', {
-            duration: 3000
-          }
-        )
-    })
+      this.router.navigate([
+        this.redirect().redirectTo
+      ]);
+    });
   }
 
   onReset() {
@@ -123,7 +112,6 @@ export class Manage {
       return 'Formato inválido';
     }
 
-    // Se você tiver um validador customizado que já devolve a string direta:
     return typeof errors[Object.keys(errors)[0]] === 'string'
       ? errors[Object.keys(errors)[0]]
       : 'Campo inválido';
